@@ -82,6 +82,7 @@ module SymbolT =
         {
             ShowPorts: ShowPorts
             HighlightLabel: bool
+            LabelColour: string
             Colour: string
             Opacity: float  
         }
@@ -90,11 +91,13 @@ module SymbolT =
         |White
         |Light
         |Colourful
+        |Dark
 
     let showPorts_ = Lens.create (fun a -> a.ShowPorts) (fun s a -> {a with ShowPorts = s})
     // let showOutputPorts_ = Lens.create (fun a -> a.ShowOutputPorts) (fun s a -> {a with ShowOutputPorts = s})
     let highlightLabel_ = Lens.create (fun a -> a.HighlightLabel) (fun s a -> {a with HighlightLabel = s})
     let colour_ = Lens.create (fun a -> a.Colour) (fun s a -> {a with Colour = s})
+    let labelcolour_ = Lens.create (fun a -> a.LabelColour) (fun s a -> {a with LabelColour = s})
     let opacity_ = Lens.create (fun a -> a.Opacity) (fun s a -> {a with Opacity = s})
 
 

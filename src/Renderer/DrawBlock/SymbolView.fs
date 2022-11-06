@@ -11,18 +11,20 @@ open DrawModelType.SymbolT
 open Symbol
 
 
+
 //-----------------------------------------DRAWING HELPERS ---------------------------------------------------
 
+
 /// Text adding function with many parameters (such as bold, position and text)
-let addText (pos: XYPos) name alignment weight size =
+let addText (pos: XYPos) name alignment weight size colour =
     let text =
-            {defaultText with TextAnchor = alignment; FontWeight = weight; FontSize = size}
+            {defaultText with TextAnchor = alignment; FontWeight = weight; FontSize = size; Fill = colour; }
     [makeText pos.X pos.Y name text]
 
 /// Add one or two lines of text, two lines are marked by a . delimiter
-let addLegendText (pos: XYPos) (name:string) alignment weight size =
+let addLegendText (pos: XYPos) (name:string) alignment weight size colour =
     let text =
-            {defaultText with TextAnchor = alignment; FontWeight = weight; FontSize = size}
+            {defaultText with TextAnchor = alignment; FontWeight = weight; FontSize = size; Fill = colour}
     match name.Split([|'.'|]) with
     | [|oneLine|] -> 
         [makeText pos.X pos.Y name text]
@@ -48,7 +50,7 @@ let inline private portCircles (pos: XYPos) (show:ShowPorts)=
     [makeCircle pos.X pos.Y circle]
 
 /// Puts name on ports
-let private portText (pos: XYPos) name edge =
+let private portText (pos: XYPos) name edge colour =
     let pos' = 
             match edge with 
             | Left -> pos + {X = 5.; Y = -6.}
@@ -61,12 +63,12 @@ let private portText (pos: XYPos) name edge =
             | Right -> "end"
             | Left -> "start"
             | _ -> "middle"
-    (addText pos' name align Constants.portTextWeight Constants.portTextSize)
+    (addText pos' name align Constants.portTextWeight Constants.portTextSize colour)
 
 
 /// Print the name of each port 
-let drawPortsText (portList: list<Port>) (listOfNames: list<string>) (symb: Symbol) = 
-    let getPortName name x = portText (getPortPosToRender symb portList[x]) name (symb.PortMaps.Orientation[portList.[x].Id])
+let drawPortsText (portList: list<Port>) (listOfNames: list<string>) (symb: Symbol) colour = 
+    let getPortName name x = portText (getPortPosToRender symb portList[x]) name (symb.PortMaps.Orientation[portList.[x].Id]) colour
     if listOfNames.Length < 1
     then []
     else 
@@ -106,7 +108,7 @@ let createBiColorPolygon points colour strokeColor opacity strokeWidth (comp:Com
 let addClock (pos: XYPos) colour opacity =
     let points = sprintf $"{pos.X},{pos.Y-1.},{pos.X+8.},{pos.Y-7.},{pos.X},{pos.Y-13.}"
     createPolygon points colour opacity
-    |> List.append (addText (pos + {X = 10.; Y = -13.} ) " clk" "start" "normal" "12px")
+    |> List.append (addText (pos + {X = 10.; Y = -13.} ) " clk" "start" "normal" "12px" "black")
 
 let addHorizontalLine posX1 posX2 posY opacity = // TODO: Line instead of polygon?
     let points = sprintf $"{posX1},{posY},{posX2},{posY}"
@@ -158,6 +160,11 @@ let rotatePoints (points) (centre:XYPos) (transform:STransform) =
 
 /// --------------------------------------- SYMBOL DRAWING ------------------------------------------------------ ///  
 
+(* let getTextColour (theme:ThemeType) =
+    match theme with
+        | Dark -> "white"
+        | _ -> "black"
+ *)
 let drawSymbol (symbol:Symbol) (theme:ThemeType) =
     let appear = symbol.Appearance
     let colour = appear.Colour
@@ -170,14 +177,15 @@ let drawSymbol (symbol:Symbol) (theme:ThemeType) =
     let W = float comp.W*(Option.defaultValue 1.0 symbol.HScale)
     let transform = symbol.STransform
 
+    //let textColour = getTextColour theme
+    let textColour = appear.LabelColour
     let mergeSplitLine pos msb lsb  =
         let text = 
             match msb = lsb, msb >= lsb with
             | _, false -> ""
             | true, _ -> sprintf $"({msb})"
             | false, _ -> sprintf $"({msb}:{lsb})"
-        addText pos text "middle" "bold" Constants.mergeSplitTextSize
-
+        addText pos text "middle" "bold"  Constants.mergeSplitTextSize  textColour
 
     let busSelectLine msb lsb  =
         let text = 
@@ -196,7 +204,7 @@ let drawSymbol (symbol:Symbol) (theme:ThemeType) =
             | Degree180 -> {X=w/2.; Y= -8.}, "middle"
             | Degree270 -> {X= 4.; Y=h/2. - 7.}, "end"
             | Degree90 -> {X= 5.+ w/2.; Y=h/2. }, "start"
-        addText pos text align "bold" Constants.busSelectTextSize
+        addText pos text align "bold" Constants.busSelectTextSize textColour
 
     let clockTxtPos = 
         match transform.Rotation, transform.flipped with
@@ -319,7 +327,7 @@ let drawSymbol (symbol:Symbol) (theme:ThemeType) =
                         (fst values[i]) 
                         (snd values[i])) [] [0..2]
         | DFF | DFFE | Register _ |RegisterE _ | ROM1 _ |RAM1 _ | AsyncRAM1 _ | Counter _ | CounterNoEnable _ | CounterNoLoad _ | CounterNoEnableLoad _  -> 
-            (addText clockTxtPos " clk" "middle" "normal" "12px")
+            (addText clockTxtPos " clk" "middle" "normal" "12px" textColour)
         | BusSelection(nBits,lsb) ->           
             busSelectLine (lsb + nBits - 1) lsb
         | Constant1 (_, _, dialogVal) -> 
@@ -331,19 +339,19 @@ let drawSymbol (symbol:Symbol) (theme:ThemeType) =
                 | _, Degree270 -> "end",0.,-5.
                 | _ -> "start",0.,-5.
             let fontSize = if dialogVal.Length < 2 then "14px" else "12px"
-            addText {X = w/2. + xOffset; Y = h/1.5 + yOffset}  dialogVal align "normal" fontSize
+            addText {X = w/2. + xOffset; Y = h/1.5 + yOffset}  dialogVal align "normal" fontSize textColour
         | BusCompare (_,y) ->
-            (addText {X = w/2.-2.; Y = h/2.7-1.} ("=" + NumberHelpers.hex(int y)) "middle" "bold" "10px")
+            (addText {X = w/2.-2.; Y = h/2.7-1.} ("=" + NumberHelpers.hex(int y)) "middle" "bold" "10px" textColour)
         |BusCompare1 (_,_,t) -> 
-            (addText {X = w/2.-2.; Y = h/2.7-1.} ("= " + t) "middle" "bold" "10px")
+            (addText {X = w/2.-2.; Y = h/2.7-1.} ("= " + t) "middle" "bold" "10px" textColour)
         // legacy component type: to be deleted
         | Input x
         | Input1 (x, _) | Output x-> 
-            (addText {X = w/2.; Y = h/2.7} (busTitleAndBits "" x) "middle" "normal" "12px")
+            (addText {X = w/2.; Y = h/2.7} (busTitleAndBits "" x) "middle" "normal" "12px" textColour)
         | Viewer (x) -> 
-            (addText {X = w/2.; Y = h/2.7 - 1.25} (busTitleAndBits "" x) "middle" "normal" "9px")
+            (addText {X = w/2.; Y = h/2.7 - 1.25} (busTitleAndBits "" x) "middle" "normal" "9px" textColour)
         | _ when symbol.IsClocked -> 
-            (addText (Array.head (rotatePoints [|{X = 15.; Y = float H - 11.}|] {X=W/2.;Y=H/2.} transform )) " clk" "middle" "normal" "12px")
+            (addText (Array.head (rotatePoints [|{X = 15.; Y = float H - 11.}|] {X=W/2.;Y=H/2.} transform )) " clk" "middle" "normal" "12px" textColour)
         | _ -> []
 
     let outlineColour, strokeWidth =
@@ -357,9 +365,12 @@ let drawSymbol (symbol:Symbol) (theme:ThemeType) =
 
 
     /// to deal with the label
-    let addComponentLabel (comp: Component) transform colour = 
+    // Label is "outside" symbol and is draggable
+    let addComponentLabel (comp: Component) transform componentcolour labelcolour =
         let weight = Constants.componentLabelStyle.FontWeight // bold or normal
-        let style = {Constants.componentLabelStyle with FontWeight = weight}
+
+
+        let style = {Constants.componentLabelStyle with Fill = labelcolour}
         let box = symbol.LabelBoundingBox
         let margin = 
             match comp.Type with
@@ -376,7 +387,7 @@ let drawSymbol (symbol:Symbol) (theme:ThemeType) =
                 makeCircle (c'.X) (c'.Y) {defaultCircle with R=3.})*)
         let pos = box.TopLeft - symbol.Pos + {X=margin;Y=margin} + Constants.labelCorrection
         let text = addStyledText {style with DominantBaseline="hanging"} pos comp.Label
-        match colour with
+        match componentcolour with
         | "lightgreen" ->
             let x,y = pos.X - margin*0.8, pos.Y - margin*0.8
             let w,h = box.W - margin*0.4, box.H - margin * 0.4
@@ -388,9 +399,10 @@ let drawSymbol (symbol:Symbol) (theme:ThemeType) =
 
 
 
- 
-            
-    let labelcolour = outlineColor symbol.Appearance.Colour
+
+
+    let labelcolour = outlineColor symbol.Appearance.LabelColour
+
     let legendOffset (compWidth: float) (compHeight:float) (symbol: Symbol) : XYPos=
         let pMap = symbol.PortMaps.Order
         let vertFlip = symbol.STransform.Rotation = Degree180
@@ -420,14 +432,15 @@ let drawSymbol (symbol:Symbol) (theme:ThemeType) =
     // Put everything together 
     (drawPorts PortType.Output comp.OutputPorts showPorts symbol)
     |> List.append (drawPorts PortType.Input comp.InputPorts showPorts symbol)
-    |> List.append (drawPortsText (comp.InputPorts @ comp.OutputPorts) (portNames comp.Type) symbol)
+    |> List.append (drawPortsText (comp.InputPorts @ comp.OutputPorts) (portNames comp.Type) symbol textColour)
     |> List.append (addLegendText 
                         (legendOffset w h symbol) 
                         (getComponentLegend comp.Type transform.Rotation) 
                         "middle" 
                         "bold" 
-                        (legendFontSize comp.Type))
-    |> List.append (addComponentLabel comp transform labelcolour)
+                        (legendFontSize comp.Type)
+                        textColour)
+    |> List.append (addComponentLabel comp transform symbol.Appearance.Colour labelcolour)
     |> List.append (additions)
     |> List.append (drawMovingPortTarget symbol.MovingPortTarget symbol points)
     |> List.append (createBiColorPolygon points colour outlineColour opacity strokeWidth comp)
@@ -438,7 +451,7 @@ let init () =
     { 
         Symbols = Map.empty; CopiedSymbols = Map.empty
         Ports = Map.empty ; InputPortsConnected= Set.empty
-        OutputPortsConnected = Map.empty; Theme = Colourful
+        OutputPortsConnected = Map.empty; Theme = Dark
     }, Cmd.none
 
 //----------------------------View Function for Symbols----------------------------//

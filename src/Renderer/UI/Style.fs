@@ -95,15 +95,18 @@ let canvasVisibleStyle model =
         Right widthRightSec
         BorderTop "2px solid lightgray"
     ]
-    
+
 // Used by Sheet
-let canvasVisibleStyleList model = 
+
+
+let canvasVisibleStyleList model =
     let background =
         match model.Sheet.Wire.Symbol.Theme with
         |DrawModelType.SymbolT.ThemeType.White -> BackgroundColor "white"
         |DrawModelType.SymbolT.ThemeType.Light -> BackgroundColor "rgba(255,255,0,0.1)"  //light yellow
         |DrawModelType.SymbolT.ThemeType.Colourful -> BackgroundColor "rgba(0,0,0,0.05)" //light gray
-    
+        |DrawModelType.SymbolT.ThemeType.Dark -> BackgroundColor "#333" //dark gray
+
     let widthRightSec = rightSectionWidth model
     [
         Display DisplayOptions.Block

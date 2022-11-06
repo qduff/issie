@@ -185,6 +185,10 @@ let viewMenu dispatch =
                 maindispatch <| SetThemeUserData SymbolT.ThemeType.Colourful
                 symbolDispatch (SymbolT.Msg.SetTheme SymbolT.ThemeType.Colourful)
             )
+            makeItem "Dark" None (fun ev ->
+                maindispatch <| SetThemeUserData SymbolT.ThemeType.Dark
+                symbolDispatch (SymbolT.Msg.SetTheme SymbolT.ThemeType.Dark)
+            )
         ]
         makeItem "Toggle Wire Arrows" None (fun ev -> busWireDispatch (BusWireT.Msg.ToggleArrowDisplay))
         makeMenu false "Wire Type" [

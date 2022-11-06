@@ -31,10 +31,12 @@ module Constants =
     /// How large are component labels
     let labelFontSizeInPixels:float = 16 // otehr parameters scale correctly with this
 
+
+
     /// Due to a bug in TextMetrics we are restricted to monospace font, bold or normal, or helvetica, if we want
     /// accurate width
     let componentLabelStyle: Text = 
-        {defaultText with 
+        {defaultText with // could also pass this up as functions?
             TextAnchor = "start"; 
             FontSize = $"%.0f{labelFontSizeInPixels}px"; 
             FontFamily = "helvetica"; 
@@ -124,6 +126,8 @@ let getLabelBoundingBox (model: Model) (compId: ComponentId) : BoundingBox =
 //------------------------ Helper functions ------------------------//
 //------------------------------------------------------------------//
 
+
+
 let moveSymbol (offset:XYPos) (sym:Symbol) :Symbol =
     let newPos = sym.Pos + offset
     let comp' = {sym.Component with X = newPos.X; Y = newPos.Y}
@@ -170,7 +174,9 @@ let inline combineRotation (r1:Rotation) (r2:Rotation) =
     | Degree270 -> (rot90 >> rot180) r2
 
 
-    
+
+
+
 let getSymbolColour compType clocked (theme:ThemeType) =
     match theme with
     | White | Light -> "lightgray"
@@ -186,6 +192,24 @@ let getSymbolColour compType clocked (theme:ThemeType) =
         | SplitWire _ | MergeWires _ | BusSelection _ | NbitSpreader _ | IOLabel ->
             "rgb(120,120,120)"
         | _ -> "rgba(255,255,217,1)" //lightyellow: for combinational components
+    | Dark ->
+        match compType with
+        | Register _ | RegisterE _
+        | ROM1 _ | DFF | DFFE | RAM1 _ | AsyncRAM1 _
+        | Counter _ |CounterNoEnable _ | CounterNoLoad _  |CounterNoEnableLoad _ -> "lightblue"
+        | Custom _ when clocked
+            -> "darkblue"  //for clocked components
+        |Input _ |Input1 (_,_) |Output _ |Viewer _ |Constant _ |Constant1 _
+            -> "#A5A2A2"  //for IO
+        | SplitWire _ | MergeWires _ | BusSelection _ | NbitSpreader _ ->
+            "rgb(120,120,120)"
+        | IOLabel _ -> "#000" // no working?
+        | _ -> "#575757" // for combinational component
+
+let getLabelColour compType (theme:ThemeType) =
+    match theme with
+        | Dark -> "white"
+        | _ -> "black"
 
 
 
@@ -671,6 +695,7 @@ let createNewSymbol (ldcs: LoadedComponent list) (pos: XYPos) (comptype: Compone
             HighlightLabel = false
             ShowPorts = ShowNone
             Colour = getSymbolColour comptype (isClocked [] ldcs comp) theme
+            LabelColour = getLabelColour comptype theme
             Opacity = 1.0
           }
       InWidth0 = None // set by BusWire

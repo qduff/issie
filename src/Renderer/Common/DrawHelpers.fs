@@ -10,6 +10,8 @@ open Fable.React.Props
 open CommonTypes
 
 
+
+
 //-------------------------------------------------------------------------//
 //------------------------------Types--------------------------------------//
 //-------------------------------------------------------------------------//
@@ -154,15 +156,19 @@ let defaultCircle = {
 }
 
 /// Default text, change this to create new text types
+
+
+
 let defaultText = {
     TextAnchor = "middle"
     FontSize = "10px"
     FontFamily = "helvetica" // helvetica seems to work for computing widths (most fonts don't)
     FontWeight = "normal"
-    Fill = "black"
+    Fill = "Black"
     UserSelect = UserSelectOptions.None
     DominantBaseline = "hanging"
 }
+
 
 /// Port circle, used by both Sheet and Symbol to create ports
 let portCircle = { defaultCircle with R = 5.0; Stroke = "Black"; StrokeWidth = "1.0px"; Fill = "Grey"}

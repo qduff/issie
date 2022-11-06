@@ -25,8 +25,20 @@ let init () =
         ArrowDisplay = Constants.initialArrowDisplay
     } , Cmd.none
 
-
+let getWireColour (theme:ThemeType) =
+    match theme with
+        | Dark -> HighLightColor.White
+        | _ -> HighLightColor.DarkSlateGrey
             
+let getWireSelectColour (theme:ThemeType) =
+    match theme with
+        | Dark -> HighLightColor.SkyBlue
+        | _ -> HighLightColor.Purple
+            
+let getWireErrorColour (theme:ThemeType) =
+    match theme with    
+        | _ -> HighLightColor.Red
+
 /// Handles messages
 let update (msg : Msg) (model : Model) : Model*Cmd<Msg> =
 
@@ -59,7 +71,7 @@ let update (msg : Msg) (model : Model) : Model*Cmd<Msg> =
                 WId = wireId
                 InputPort = inputId
                 OutputPort = outputId
-                Color = HighLightColor.DarkSlateGrey
+                Color = getWireColour model.Symbol.Theme
                 Width = 1
                 Segments = []
                 StartPos = { X = 0; Y = 0 }
@@ -81,7 +93,7 @@ let update (msg : Msg) (model : Model) : Model*Cmd<Msg> =
                     | Some a -> a
                     | None -> wire.Width
                 let newColor = 
-                    if wire.Color = Purple || wire.Color = Brown then Purple else DarkSlateGrey
+                    if wire.Color = getWireSelectColour model.Symbol.Theme || wire.Color = Brown then getWireSelectColour model.Symbol.Theme else getWireColour model.Symbol.Theme
                 wireMap.Add ( wire.WId, { wire with Width = width ; Color = newColor} )
 
             let addSymbolWidthFolder (m: Map<ComponentId,Symbol>) (_: ConnectionId) (wire: Wire) =
@@ -138,9 +150,9 @@ let update (msg : Msg) (model : Model) : Model*Cmd<Msg> =
             |> Map.map
                 (fun id wire ->
                     if List.contains id connectionIds then
-                        {wire with Color = HighLightColor.Red}
+                        {wire with Color = getWireErrorColour model.Symbol.Theme}
                     else if List.contains id model.ErrorWires then
-                        {wire with Color = HighLightColor.DarkSlateGrey}
+                        {wire with Color = getWireColour model.Symbol.Theme}
                     else wire
                 )
 
@@ -156,11 +168,11 @@ let update (msg : Msg) (model : Model) : Model*Cmd<Msg> =
                         if List.contains id connectionIds then
                             {wire with Color = HighLightColor.Brown}
                         else
-                            {wire with Color = HighLightColor.Red}
+                            {wire with Color = getWireErrorColour model.Symbol.Theme}
                     else if List.contains id connectionIds then
-                        {wire with Color = HighLightColor.Purple}
+                        {wire with Color = getWireSelectColour model.Symbol.Theme}
                     else
-                        {wire with Color = HighLightColor.DarkSlateGrey}
+                        {wire with Color = getWireColour model.Symbol.Theme}
                 )
 
         { model with Wires = newWires }, Cmd.none
@@ -312,7 +324,7 @@ let update (msg : Msg) (model : Model) : Model*Cmd<Msg> =
                     WId = ConnectionId conn.Id
                     InputPort = inputId
                     OutputPort = outputId
-                    Color = HighLightColor.DarkSlateGrey
+                    Color = getWireColour model.Symbol.Theme
                     Width = 1
                     Segments = segments
                     StartPos = Symbol.getOutputPortLocation None model.Symbol outputId

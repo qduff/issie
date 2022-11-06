@@ -459,6 +459,7 @@ let createSymbol ldcs theme prevSymbols comp =
                     HighlightLabel = false
                     ShowPorts = ShowNone //do not show input ports initially
                     // ShowOutputPorts = false //do not show output ports initially
+                    LabelColour = getLabelColour comp.Type theme
                     Colour = getSymbolColour comp.Type clocked theme
                     Opacity = 1.0
                 }
@@ -901,6 +902,9 @@ let update (msg : Msg) (model : Model): Model*Cmd<'a>  =
             model.Symbols
             |> Map.map 
                 (fun _ sym ->  Optic.map appearance_ (set colour_ (getSymbolColour sym.Component.Type sym.IsClocked theme)) sym)
+            |> Map.map
+                (fun _ sym ->  Optic.map appearance_ (set labelcolour_ (getLabelColour sym.Component.Type theme)) sym)
+
         {model with Theme=theme; Symbols = resetSymbols}, Cmd.none
 
 

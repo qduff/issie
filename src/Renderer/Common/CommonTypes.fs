@@ -438,6 +438,7 @@ module CommonTypes
             | Purple -> "Purple"
             | DarkSlateGrey -> "darkslategrey"
             | Thistle -> "thistle"
+            | White -> "White"
             | c -> sprintf "%A" c
             
             

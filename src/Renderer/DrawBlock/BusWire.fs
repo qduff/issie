@@ -852,7 +852,7 @@ let view (model : Model) (dispatch : Dispatch<Msg>) =
                     | Modern -> renderModernWire props
                 let polygon = {
                     defaultPolygon with
-                        Fill = "black"
+                        Fill = "white"
                         }
                 let x,y = props.InputPortLocation.X, props.InputPortLocation.Y
                 let ws = min 2.5 props.StrokeWidthP
