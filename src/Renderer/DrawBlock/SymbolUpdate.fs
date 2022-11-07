@@ -904,7 +904,7 @@ let update (msg : Msg) (model : Model): Model*Cmd<'a>  =
                 (fun _ sym ->  Optic.map appearance_ (set colour_ (getSymbolColour sym.Component.Type sym.IsClocked theme)) sym)
             |> Map.map
                 (fun _ sym ->  Optic.map appearance_ (set labelcolour_ (getLabelColour sym.Component.Type theme)) sym)
-
+        
         {model with Theme=theme; Symbols = resetSymbols}, Cmd.none
 
 

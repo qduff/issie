@@ -159,6 +159,14 @@ let viewMenu dispatch =
     
     let symbolDispatch msg = busWireDispatch (BusWireT.Msg.Symbol msg)
 
+
+
+    let switchUIDark (todark:bool) = 
+        match todark with
+            | true -> addClassToRoot("dark")
+            | false -> removeClassFromRoot("dark")
+
+
     let devToolsKey = if isMac then "Alt+Command+I" else "Ctrl+Shift+I"
     makeMenu false "View" [
         makeRoleItem "Toggle Fullscreen" (Some "F11") MenuItemRole.Togglefullscreen
@@ -175,18 +183,22 @@ let viewMenu dispatch =
         makeMenu false "Theme" [
             makeItem "Grayscale" None (fun ev -> 
                 maindispatch <| SetThemeUserData SymbolT.ThemeType.White
+                switchUIDark false
                 symbolDispatch (SymbolT.Msg.SetTheme SymbolT.ThemeType.White)
             )
             makeItem "Light" None (fun ev -> 
                 maindispatch <| SetThemeUserData SymbolT.ThemeType.Light
+                switchUIDark true
                 symbolDispatch (SymbolT.Msg.SetTheme SymbolT.ThemeType.Light)
             )
             makeItem "Colourful" None (fun ev -> 
                 maindispatch <| SetThemeUserData SymbolT.ThemeType.Colourful
+                switchUIDark false
                 symbolDispatch (SymbolT.Msg.SetTheme SymbolT.ThemeType.Colourful)
             )
             makeItem "Dark" None (fun ev ->
                 maindispatch <| SetThemeUserData SymbolT.ThemeType.Dark
+                switchUIDark true
                 symbolDispatch (SymbolT.Msg.SetTheme SymbolT.ThemeType.Dark)
             )
         ]

@@ -11,6 +11,14 @@ open Fable.Core.JsInterop
 open ElectronAPI
 open Fable.React
 
+
+[<Emit("document.getElementsByTagName('body')[0].setAttribute('class', $0);")>]
+let addClassToRoot  (cname: string): string = jsNative
+
+[<Emit("document.getElementsByTagName('body')[0].classList.remove( $0 );")>]
+let removeClassFromRoot  (cname: string): string = jsNative
+
+
 /// Fix to access the deprecated @electron.remote module.
 /// This must be enabled from main.fs
 /// NB the interface used here is not precisely correct, because it

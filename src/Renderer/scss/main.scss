@@ -1,8 +1,30 @@
 $fa-font-path: './../../../node_modules/font-awesome/fonts/';
 
+
 @import './../../../node_modules/font-awesome/scss/font-awesome.scss';
 @import './../../../node_modules/bulma/bulma.sass';
 @import './../../../node_modules/bulma-tooltip/src/sass/index.sass';
+
+body {
+    background-color: $light;
+}
+body.dark {
+    background-color: $dark;
+    color: $light;
+}
+body.dark * {
+    background-color: $dark;
+    color: $light;
+}
+body.dark .modal .modal-background {
+    background-color: rgba($dark,0.5);
+    color: $light;
+}
+
+body.dark li.is-active>a {
+    background-color: lighten($dark,20%) !important;
+    color: $light;
+}
 
 
 #Draw2dCanvas {

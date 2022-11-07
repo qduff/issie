@@ -73,6 +73,7 @@ let wait n cont =
         cont ()
         })
 
+
 let createMainWindow () =
     let options = jsOptions<BrowserWindowConstructorOptions> <| fun options ->
         options.show <- Some <| true

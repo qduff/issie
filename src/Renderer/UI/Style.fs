@@ -18,6 +18,12 @@ let minEditorWidth() = int ((document.getElementById "WholeApp").offsetWidth * 0
 
 let rightSectionWidthViewerDefault = 650
 
+let uibackgroundcolor  (theme) =
+    match theme with
+    | Dark -> "lightgray"
+    | _ -> "white"
+
+
 let getHeaderHeight =
     headerHeight
     |> String.filter (fun c -> (int(c) <= 57 && int(c) >= 48))
@@ -61,6 +67,9 @@ let leftSectionStyle model =
 
 let rightSectionStyle model = 
     let widthRightSec = rightSectionWidth model
+
+    //let col = uibackgroundcolor model.Symbol.theme
+
     Style [
         Position PositionOptions.Fixed
         Right "0px"
@@ -170,7 +179,7 @@ let menuLabelStyle = Style [
     Outline "none"
     MarginTop "10px"
     MarginBottom "10px"
-    Color "#7a7a7a"
+    // Color "#7a7a7a"
     FontSize "0.80em"
     LetterSpacing "0.1em"
     TextTransform "uppercase"

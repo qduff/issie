@@ -354,13 +354,19 @@ let drawSymbol (symbol:Symbol) (theme:ThemeType) =
             (addText (Array.head (rotatePoints [|{X = 15.; Y = float H - 11.}|] {X=W/2.;Y=H/2.} transform )) " clk" "middle" "normal" "12px" textColour)
         | _ -> []
 
-    let outlineColour, strokeWidth =
+
+    let outlineColour =
+        match theme with
+            | Dark ->  "white"
+            | _ -> "black"
+
+    let strokeWidth =
         match comp.Type with
-        | SplitWire _ | MergeWires -> outlineColor colour, "4.0"
-        |NbitSpreader _ -> outlineColor colour, "4.0"
-        | IOLabel -> outlineColor colour, "4.0"
-        | BusSelection _ -> outlineColor colour, "4.0"
-        | _ -> "black", "1.0"
+        | SplitWire _ | MergeWires ->  "4.0"
+        | NbitSpreader _ ->  "4.0"
+        | IOLabel ->  "4.0"
+        | BusSelection _ ->  "4.0"
+        | _ ->  "1.0"
     
 
 
