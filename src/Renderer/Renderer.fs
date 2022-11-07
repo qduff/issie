@@ -153,19 +153,13 @@ let viewMenu dispatch =
     let dispatch = SheetT.KeyPress >> sheetDispatch
     let wireTypeDispatch = SheetT.WireType >> sheetDispatch
     let interfaceDispatch = SheetT.IssieInterface >> sheetDispatch
-    let busWireDispatch (bMsg: BusWireT.Msg) = sheetDispatch (SheetT.Msg.Wire bMsg)
-    
-    
-    
+    let busWireDispatch (bMsg: BusWireT.Msg) = sheetDispatch (SheetT.Msg.Wire bMsg)   
     let symbolDispatch msg = busWireDispatch (BusWireT.Msg.Symbol msg)
-
-
 
     let switchUIDark (todark:bool) = 
         match todark with
             | true -> addClassToRoot("dark")
             | false -> removeClassFromRoot("dark")
-
 
     let devToolsKey = if isMac then "Alt+Command+I" else "Ctrl+Shift+I"
     makeMenu false "View" [

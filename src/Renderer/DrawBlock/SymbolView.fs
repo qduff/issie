@@ -369,13 +369,10 @@ let drawSymbol (symbol:Symbol) (theme:ThemeType) =
         | _ ->  "1.0"
     
 
-
     /// to deal with the label
     // Label is "outside" symbol and is draggable
     let addComponentLabel (comp: Component) transform componentcolour labelcolour =
         let weight = Constants.componentLabelStyle.FontWeight // bold or normal
-
-
         let style = {Constants.componentLabelStyle with Fill = labelcolour}
         let box = symbol.LabelBoundingBox
         let margin = 
@@ -402,10 +399,6 @@ let drawSymbol (symbol:Symbol) (theme:ThemeType) =
             [ poly ; text ]
         | _ ->
             [text] // add ;corners (uncommenting corners) for box corner display
-
-
-
-
 
     let labelcolour = outlineColor symbol.Appearance.LabelColour
 
