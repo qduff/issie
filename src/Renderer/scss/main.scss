@@ -1,29 +1,37 @@
 $fa-font-path: './../../../node_modules/font-awesome/fonts/';
 
+$dark: #2e2e2e;
+
 @import './../../../node_modules/font-awesome/scss/font-awesome.scss';
 @import './../../../node_modules/bulma/bulma.sass';
 @import './../../../node_modules/bulma-tooltip/src/sass/index.sass';
 
 body {
     background-color: $light;
+    color: $dark;
 }
 body.dark {
+    * {
     background-color: $dark;
     color: $light;
+    }
+    .modal.is-active.modal1   {
+        background-color: transparent;
+    }
+    .modal-background {
+        background-color: rgba($dark,0.9);
+    }
+    div.modal-card{
+        border: 1px solid white;
+    }
+    li.is-active>a {
+        background-color: lighten($dark,20%) !important;
+        color: white;
+    }
+    .button:disabled {
+        background-color: transparent;    
+    }
 }
-body.dark * {
-    background-color: $dark;
-    color: $light;
-}
-body.dark .modal .modal-background {
-    background-color: rgba($dark,0.5);
-    color: $light;
-}
-body.dark li.is-active>a {
-    background-color: lighten($dark,20%) !important;
-    color: $light;
-}
-
 
 #Draw2dCanvas {
     z-index: -10

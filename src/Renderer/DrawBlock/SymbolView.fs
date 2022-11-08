@@ -160,11 +160,6 @@ let rotatePoints (points) (centre:XYPos) (transform:STransform) =
 
 /// --------------------------------------- SYMBOL DRAWING ------------------------------------------------------ ///  
 
-(* let getTextColour (theme:ThemeType) =
-    match theme with
-        | Dark -> "white"
-        | _ -> "black"
- *)
 let drawSymbol (symbol:Symbol) (theme:ThemeType) =
     let appear = symbol.Appearance
     let colour = appear.Colour
@@ -177,7 +172,6 @@ let drawSymbol (symbol:Symbol) (theme:ThemeType) =
     let W = float comp.W*(Option.defaultValue 1.0 symbol.HScale)
     let transform = symbol.STransform
 
-    //let textColour = getTextColour theme
     let textColour = appear.LabelColour
     let mergeSplitLine pos msb lsb  =
         let text = 

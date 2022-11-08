@@ -659,7 +659,7 @@ let viewRowAsData numBase styleInfo i (row: TruthTableCell list) =
         let cellStyle =
             match Map.tryFind cell.IO styleInfo, i%2 with
             | None, _ -> failwithf "what? IO %A not found in Grid Styles" cell.IO
-            | Some s, 1 -> Style <| (BackgroundColor "whitesmoke")::s
+            | Some s, 1 -> Style <| (BackgroundColor "darkgray")::s
             | Some s, _ -> Style s
         match cell.Data with
         | Bits [] -> failwithf "what? Empty WireData in TruthTable"

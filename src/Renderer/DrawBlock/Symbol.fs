@@ -196,9 +196,9 @@ let getSymbolColour compType clocked (theme:ThemeType) =
         match compType with
         | Register _ | RegisterE _
         | ROM1 _ | DFF | DFFE | RAM1 _ | AsyncRAM1 _
-        | Counter _ |CounterNoEnable _ | CounterNoLoad _  |CounterNoEnableLoad _ -> "lightblue"
+        | Counter _ |CounterNoEnable _ | CounterNoLoad _  |CounterNoEnableLoad _ -> "#3c2c5a"
         | Custom _ when clocked
-            -> "darkblue"  //for clocked components
+            -> "#3c2c5a"  
         |Input _ |Input1 (_,_) |Output _ |Viewer _ |Constant _ |Constant1 _
             -> "#A5A2A2"  //for IO
         | SplitWire _ | MergeWires _ | BusSelection _ | NbitSpreader _ ->

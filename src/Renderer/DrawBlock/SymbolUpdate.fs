@@ -354,6 +354,18 @@ let inline symbolsHaveError model compList =
         ||> List.fold setSymColorToRed 
     { model with Symbols = newSymbols }
 
+
+let getSelectColor (theme:ThemeType) =
+    match theme with
+    | Dark -> "#183f1e"
+    | _ -> "lightgreen"
+
+let getErrorColor (theme:ThemeType) =
+    match theme with
+    | Dark -> "darkred"
+    | _ -> "red"
+
+
 /// Given a model and a component id list, it updates the specified symbols' colour to green with max opacity, and every other symbols' colour to gray
 let inline selectSymbols model compList =
     let resetSymbols = 
@@ -367,7 +379,7 @@ let inline selectSymbols model compList =
         )
 
     let updateSymbolColour prevSymbols sId =
-        Map.add sId (set (appearance_ >-> colour_)  "lightgreen" resetSymbols[sId]) prevSymbols
+        Map.add sId (set (appearance_ >-> colour_) (getSelectColor model.Theme) resetSymbols[sId]) prevSymbols
     
     let newSymbols =
         (resetSymbols, compList)
@@ -384,7 +396,7 @@ let inline errorSymbols model (errorCompList,selectCompList,isDragAndDrop) =
             
     let updateSymbolStyle prevSymbols sId =
         if not isDragAndDrop then 
-            Map.add sId (set (appearance_ >-> colour_) "lightgreen" resetSymbols[sId]) prevSymbols
+            Map.add sId (set (appearance_ >-> colour_) (getSelectColor model.Theme) resetSymbols[sId]) prevSymbols
         else 
             Map.add sId (set (appearance_ >-> opacity_) 0.2 resetSymbols[sId]) prevSymbols
 
@@ -393,7 +405,7 @@ let inline errorSymbols model (errorCompList,selectCompList,isDragAndDrop) =
         ||> List.fold updateSymbolStyle 
 
     let setSymColourToRed prevSymbols sId =
-        Map.add sId (set (appearance_ >-> colour_) "Red" resetSymbols[sId]) prevSymbols
+        Map.add sId (set (appearance_ >-> colour_) (getErrorColor model.Theme) resetSymbols[sId]) prevSymbols
 
     let newSymbols = 
         (selectSymbols, errorCompList)

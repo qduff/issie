@@ -182,7 +182,7 @@ let viewMenu dispatch =
             )
             makeItem "Light" None (fun ev -> 
                 maindispatch <| SetThemeUserData SymbolT.ThemeType.Light
-                switchUIDark true
+                switchUIDark false
                 symbolDispatch (SymbolT.Msg.SetTheme SymbolT.ThemeType.Light)
             )
             makeItem "Colourful" None (fun ev -> 
